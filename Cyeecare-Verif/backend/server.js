@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const crypto = require('node:crypto');
 const axios = require('axios');
+const path = require('node:path');
 require('dotenv').config();
 
 const app = express();
@@ -36,6 +37,9 @@ app.use(cors({
 
 app.use(express.json());
 
+// Serve static files frontend dari folder public (di luar folder backend)
+app.use(express.static(path.join(__dirname, '../public')));
+
 // CONFIG KREDENSIAL MASTER VENDOR (TOEWIN)
 const VENDOR_CONFIG = {
   apiUrl: process.env.VENDOR_API_URL || 'https://web.mark.toewin.com/webapi1/channel/api/codeStatusInfo/tCheckCode',
@@ -47,11 +51,12 @@ const VENDOR_CONFIG = {
 // Pembuat 32-bit Uppercase MD5 Sign
 function generateToewinSign(brandId, account, password, type, fwm) {
   const rawString = `brandId=${brandId}&account=${account}&password=${password}&type=${type}&fwm=${fwm}`;
-  return crypto.createHash('md5').update(rawString).digest('hex').toUpperCase();
+  // The vendor protocol requires an uppercase MD5 signature; it is not used for password storage or security.
+  return crypto.createHash('md5').update(rawString).digest('hex').toUpperCase(); // NOSONAR
 }
 
-// Endpoint Test Server Status
-app.get('/', (req, res) => {
+// Endpoint status kesehatan API
+app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'active', message: 'Cyeecare API Backend Running Successfully' });
 });
 
