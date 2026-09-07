@@ -38,11 +38,12 @@ app.use(cors({
 app.use(express.json());
 
 // Tentukan lokasi pasti folder public
+// Tentukan lokasi pasti folder public
 const possiblePublicPaths = [
-  path.join(__dirname, '../public'),
-  path.join(__dirname, 'public'),
-  path.join(process.cwd(), 'public'),
-  path.join(process.cwd(), 'Cyeecare-Verif/public')
+  path.resolve(__dirname, '../public'),
+  path.resolve(__dirname, '../../public'),
+  path.resolve(process.cwd(), 'public'),
+  path.resolve(process.cwd(), '../public')
 ];
 
 let publicPath = possiblePublicPaths.find((p) => fs.existsSync(path.join(p, 'index.html'))) || possiblePublicPaths[0];
