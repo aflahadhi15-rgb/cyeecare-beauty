@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyeecare Beauty - Empower Your Beauty</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+      </svg>
+      <span>Cyeecare</span>
+    </div>
+
+  </nav>
+
+  <section class="hero-container">
+    
+    <div class="hero-left">
+      <h1 class="hero-title">
+        Empower Your Beauty.<br>
+        <span>Empower Your Confidence.</span>
+      </h1>
+      
+      <p class="hero-desc">
+        Verifikasi keaslian produk Cyeecare Anda untuk memastikan kualitas dan keamanan perawatan kulit terbaik harian Anda.
+      </p>
+
+      <div class="action-box">
+        <button type="button" class="open-verify-btn" onclick="openVerifyModal()">
+          Verify Your Product
+        </button>
+      </div>
+
+      <div class="thumbnails">
+        <img src="./assets/sikly-hairmask.jpg" alt="Cyeecare Product 1" class="thumb-img">
+        <img src="./assets/brightening-serum.jpg" alt="Cyeecare Product 2" class="thumb-img">
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <img src="./assets/main-hero.jpg" alt="Cyeecare Official Banner" class="main-img">
+    </div>
+
+  </section>
+
+  <div id="verifyModal" class="modal-overlay hidden">
+    <div class="drve-card">
+      <div class="card-bg-circle"></div>
+
+      <button class="close-card-btn" onclick="closeVerifyModal()">&times;</button>
+
+      <span class="card-brand">CYEECARE</span>
+      <h2 class="card-title">Check your product</h2>
+      <p class="card-subtitle">
+        Scan the QR code or enter the authentication code on your Cyeecare product.
+      </p>
+
+      <div id="cameraArea" class="camera-box hidden">
+        <div class="scanner-viewfinder">
+          <div id="reader"></div>
+          <div class="scan-frame"></div>
+        </div>
+        <button type="button" class="close-cam-btn" onclick="closeCameraArea()">Close Camera</button>
+      </div>
+
+      <div id="cameraError" class="custom-error-box hidden">
+        <p>Kamera tidak terdeteksi atau izin ditolak.</p>
+        <label for="qrFileInput" class="upload-link-btn">
+          Unggah Foto Barcode/QR
+        </label>
+        <input type="file" id="qrFileInput" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
+      </div>
+
+      <button type="button" id="scanCamBtn" class="scan-cam-btn" onclick="openCameraArea()">
+        <svg class="cam-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+          <circle cx="12" cy="13" r="3" />
+        </svg>
+        SCAN WITH CAMERA
+      </button>
+
+      <div class="card-divider">
+        <span>OR ENTER CODE</span>
+      </div>
+
+      <form id="verifyForm" class="inner-form-box" onsubmit="handleVerify(event)">
+        <div class="form-group">
+          <label class="form-label" for="fwmCode">AUTHENTICATION CODE</label>
+          <input type="text" id="fwmCode" class="form-input" required placeholder="Enter product code...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="verifyType">VERIFICATION TYPE</label>
+          <select id="verifyType" class="form-select" onchange="toggleVCodeInput(this.value)">
+            <option value="1">Type 1 (Normal Check)</option>
+            <option value="2">Type 2 (With 4-Digit PIN)</option>
+          </select>
+        </div>
+
+        <div id="vCodeGroup" class="form-group hidden">
+          <label class="form-label" for="vCode">PIN CODE (4-DIGIT)</label>
+          <input type="text" id="vCode" class="form-input" maxLength="4" placeholder="1234">
+        </div>
+
+        <button type="submit" class="submit-pink-btn">CHECK PRODUCT</button>
+      </form>
+
+    </div>
+  </div>
+
+  <div id="resultModal" class="modal-overlay hidden">
+    <div class="drve-card result-card">
+      <button class="close-card-btn" onclick="closeResultModal()">&times;</button>
+      
+      <div id="statusIcon" class="status-icon-box"></div>
+      
+      <h3 id="resultStatus" class="result-status-title">STATUS</h3>
+      <p id="resultMessage" class="result-status-desc">Message</p>
+
+      <div id="resultDetailBox" class="result-detail-box hidden">
+        <div class="detail-row">
+          <span>Brand</span>
+          <strong id="resBrand">-</strong>
+        </div>
+        <div class="detail-row">
+          <span>Product Name</span>
+          <strong id="resProduct">-</strong>
+        </div>
+        <div class="detail-row">
+          <span>Batch Number</span>
+          <strong id="resBatch">-</strong>
+        </div>
+      </div>
+
+      <button type="button" class="submit-pink-btn" onclick="closeResultModal()">CLOSE</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
