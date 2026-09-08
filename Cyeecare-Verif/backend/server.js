@@ -51,7 +51,8 @@ const VENDOR_CONFIG = {
 // Fungsi Pembuat MD5 Sign 32-bit Uppercase
 function generateToewinSign(brandId, account, password, type, fwm) {
   const rawString = `brandId=${brandId}&account=${account}&password=${password}&type=${type}&fwm=${fwm}`;
-  return crypto.createHash('md5').update(rawString).digest('hex').toUpperCase();
+  // Required by the vendor's legacy signing protocol; this is not used for password storage.
+  return crypto.createHash('md5').update(rawString).digest('hex').toUpperCase(); // NOSONAR
 }
 
 // 4. Routes
